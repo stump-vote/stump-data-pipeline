@@ -11,21 +11,28 @@ class NewsAPIClient:
     
     BASE_URL = "http://newsapi.org/v2"
     
-    def __init__(self, api_key):
+    def __init__(self, api_key: str):
         self.api_key = api_key
 
+    def __repr__(self) -> str:
+        return 'NewsAPIClient()'
+
     def _make_url(self, endpoint: str, query: str, date_from: str = None,
-                           date_to: str = None, sort_by: str = None) -> str:
+                           date_to: str = None, sort_by: str = None,
+                           page_size: int = 100, page: int = 1, sources: str = None) -> str:
         if endpoint[0] == '/':
             endpoint = endpoint[1:]
         endpoint_url = f'{self.BASE_URL}/{endpoint}'
-        query_params = {'q': query, 'apiKey': self.api_key, }
+        query_params = {
+            'q': query, 'apiKey': self.api_key, 'pageSize': page_size, 'page': page}
         if date_from is not None:
             query_params['from'] = date_from
         if date_to is not None:
             query_params['to'] = date_to
         if sort_by is not None:
             query_params['sortBy'] = sort_by
+        if sources is not None:
+            query_params['sources'] = sources
             
         query_string_args = sorted([f'{k}={v}' for k, v in query_params.items()])
         query_string = '&'.join(query_string_args)
@@ -46,9 +53,10 @@ class NewsAPIClient:
         return NewsApiOkayResponse(**data)
 
     def get_everything(self, query: str, date_from: str = None,
-                       date_to: str = None, sort_by: str = None) -> NewsApiResponse:
+                       date_to: str = None, sort_by: str = None,
+                       page_size: int = 100, page: int = 1, sources: str = None) -> NewsApiResponse:
 
-        url = self._make_url('everything', query, date_from, date_to, sort_by)
+        url = self._make_url('everything', query, date_from, date_to, sort_by, page_size, page, sources)
         response = self._make_get_request(url)
         return self._parse_response(response)
         
