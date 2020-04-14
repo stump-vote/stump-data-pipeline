@@ -12,6 +12,7 @@ pylint = "*"
 [packages]
 requests = "*"
 pymongo = "*"
+environs = "*"
 
 [requires]
 python_version = "3.7"

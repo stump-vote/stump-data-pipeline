@@ -1,7 +1,6 @@
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from dataclasses import asdict
 from datetime import datetime
 import math
@@ -10,15 +9,20 @@ from api_clients.news_api_client import NewsAPIClient
 from models.news_api_article import NewsApiArticle, NewsApiErrorResponse, NewsApiOkayResponse, NewsApiResponse
 from mongo_client import connect_to_mongo
 
+from environs import Env
+
 PAGE_SIZE = 5
 MAX_PAGES_PER_QUERY = 2
 
-NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
-MONGO_USER = os.environ.get('MONGO_USER', 'stump')
-MONGO_PASSWORD = os.environ.get('MONGO_PASSWORD', 'stump')
-MONGO_HOST = os.environ.get('MONGO_HOST', 'localhost')
-MONGO_PORT = int(os.environ.get('MONGO_PORT', 27018))
-MONGO_DB = os.environ.get('MONGO_DB', 'test_two')
+env = Env()
+env.read_env()
+
+NEWS_API_KEY = env('NEWS_API_KEY') 
+MONGO_USER = env('MONGO_USER')
+MONGO_PASSWORD = env('MONGO_PASSWORD')
+MONGO_HOST = env('MONGO_HOST')
+MONGO_PORT = env('MONGO_PORT')
+MONGO_DB = env('MONGO_DB')
 
 QUERIES = [
     'Abortion',
