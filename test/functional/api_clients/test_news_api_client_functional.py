@@ -58,11 +58,30 @@ def test_filter_by_source_value_error(news_api_client):
         assert str(e) == 'Too many sources specified. Use a max of 20.'
     # it should be possible to limit the number of results returned
 
+def test_limit_page_size(news_api_client):
+    response = news_api_client.get_everything(query='bitcoin', page_size=5).to_json()
+    articles = response['articles']
+    assert len(articles) == 5
+
     # it should be possible to query the full article content
-
+@pytest.mark.skip(reason='news content abbreviated, so it might not contain the exact query')
+def test_query_article_content(news_api_client):
+    response = news_api_client.get_everything(query='bitcoin', page_size=5).to_json()
+    articles = response['articles']
+    for article in articles:
+        assert (
+            'bitcoin' in article['title'].lower()
+            or 'bitcoin' in article['content'].lower())
     # it should also be possible to just query the article's title
-
+    
     # we can query for specific domains
+def test_filter_by_domain(news_api_client):
+    response = news_api_client.get_everything(query='trump', page_size=5, domains=['wsj.com']).to_json()
+    articles = response['articles']
+    assert response['status'] == 'ok'
+    for article in articles:
+        url = article['url']
+        assert 'wsj.com' in url
 
     # we can also exclude domains
 

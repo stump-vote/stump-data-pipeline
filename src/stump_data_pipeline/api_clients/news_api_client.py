@@ -16,9 +16,12 @@ class NewsAPIClient:
     def __repr__(self) -> str:
         return 'NewsAPIClient()'
 
-    def _make_url(self, endpoint: str, query: str, date_from: str = None,
+    def _make_url(self, endpoint: str, query: str = None, date_from: str = None,
                            date_to: str = None, sort_by: str = None,
-                           page_size: int = 100, page: int = 1, sources: Iterable = None) -> str:
+                           page_size: int = 100, page: int = 1,
+                           title_query: str = None,
+                           sources: Iterable = None,
+                           domains: Iterable = None) -> str:
         if endpoint[0] == '/':
             endpoint = endpoint[1:]
         endpoint_url = f'{self.BASE_URL}/{endpoint}'
@@ -36,7 +39,10 @@ class NewsAPIClient:
             query_params['sortBy'] = sort_by
         if sources is not None:
             query_params['sources'] = ','.join([str(source) for source in sources])
-
+        if title_query is not None:
+            query_params['qInTitle'] = title_query
+        if domains is not None:
+            query_params['domains'] = ','.join([str(domain) for domain in domains])
         query_string_args = sorted([f'{k}={v}' for k, v in query_params.items()])
         query_string = '&'.join(query_string_args)
 
@@ -55,12 +61,15 @@ class NewsAPIClient:
         data['articles'] = [NewsApiArticle(**article) for article in data['articles']]
         return NewsApiOkayResponse(**data)
 
-    def get_everything(self, query: str, date_from: str = None,
+    def get_everything(self, query: str = None, date_from: str = None,
                        date_to: str = None, sort_by: str = None,
-                       page_size: int = 100, page: int = 1, sources: Iterable = None) -> NewsApiResponse:
+                       page_size: int = 100, page: int = 1,
+                       title_query: str = None,
+                       sources: Iterable = None,
+                       domains: Iterable = None) -> NewsApiResponse:
         if sources is not None and len(sources) > 20:
             raise ValueError('Too many sources specified. Use a max of 20.')
-        url = self._make_url('everything', query, date_from, date_to, sort_by, page_size, page, sources)
+        url = self._make_url('everything', query, date_from, date_to, sort_by, page_size, page, sources, title_query, domains)
         response = self._make_get_request(url)
         return self._parse_response(response)
 
