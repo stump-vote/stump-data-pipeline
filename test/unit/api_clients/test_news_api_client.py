@@ -5,7 +5,7 @@ from api_clients.news_api_client import NewsAPIClient
 
 import pytest
 
-NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
+NEWS_API_KEY = 'test_key'
 TEST_DATA_DIR = os.path.abspath(
     os.path.join(
         os.path.dirname(__file__),

@@ -8,9 +8,9 @@ from util.dictionary import convert_keys_from_camel_to_snake
 import requests
 
 class NewsAPIClient:
-    
+
     BASE_URL = "http://newsapi.org/v2"
-    
+
     def __init__(self, api_key: str):
         self.api_key = api_key
 
@@ -33,10 +33,10 @@ class NewsAPIClient:
             query_params['sortBy'] = sort_by
         if sources is not None:
             query_params['sources'] = sources
-            
+
         query_string_args = sorted([f'{k}={v}' for k, v in query_params.items()])
         query_string = '&'.join(query_string_args)
-        
+
         return f'{endpoint_url}?{query_string}'
 
     def _make_get_request(self, url: str) -> requests.Response:
@@ -45,7 +45,7 @@ class NewsAPIClient:
     def _parse_response(self, response: requests.Response) -> NewsApiResponse:
         data = json.loads(response.text)
         data = convert_keys_from_camel_to_snake(data)
-        
+
         if data['status'] != 'ok':
             return NewsApiErrorResponse(**data)
 
@@ -59,7 +59,7 @@ class NewsAPIClient:
         url = self._make_url('everything', query, date_from, date_to, sort_by, page_size, page, sources)
         response = self._make_get_request(url)
         return self._parse_response(response)
-        
 
 
-        
+
+
