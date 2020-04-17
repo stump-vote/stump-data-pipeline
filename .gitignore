@@ -1,2 +1,4 @@
 .mypy_cache
 .vscode
+src/stump_data_pipeline/.env
+*.swp
