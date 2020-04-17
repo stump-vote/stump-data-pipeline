@@ -43,7 +43,19 @@ def test_news_api_get_sources(news_api_client):
         assert source['country'] == 'us'
 
 # it should be possible to limit the result to specific sources
-
+def test_filter_by_source(news_api_client):
+    response = news_api_client.get_everything(query='covid-19', sources=["abc-news", "buzzfeed"]).to_json()
+    assert response['status'] == 'ok'
+    articles = response['articles']
+    for article in articles:
+        source = article['source']
+        assert source['id'] in ('abc-news', 'buzzfeed')
+    # the client will fail before making a request if more than 20 sources
+    # are requested
+def test_filter_by_source_value_error(news_api_client):
+    with pytest.raises(ValueError) as e:
+        response = news_api_client.get_everything(query='covid-19', sources=[f'source-{i}' for i in range(21)])
+        assert str(e) == 'Too many sources specified. Use a max of 20.'
     # it should be possible to limit the number of results returned
 
     # it should be possible to query the full article content

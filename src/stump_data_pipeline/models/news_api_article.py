@@ -37,6 +37,8 @@ class NewsApiErrorResponse:
     code: str
     message: str
 
+    def to_json(self):
+        return asdict(self)
 
 @dataclass
 class NewsApiSource:
