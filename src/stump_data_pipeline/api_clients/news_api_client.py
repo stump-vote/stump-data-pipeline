@@ -1,8 +1,7 @@
 import json
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from models.news_api_article import (NewsApiArticle, NewsApiResponse, NewsApiErrorResponse,
-                                         NewsApiOkayResponse)
+from models.news_api_article import (NewsApiArticle, NewsApiResponse, NewsApiErrorResponse, NewsApiOkayResponse, NewsApiSourcesOkayResponse, NewsApiSource)
 from util.dictionary import convert_keys_from_camel_to_snake
 
 import requests
@@ -60,6 +59,15 @@ class NewsAPIClient:
         response = self._make_get_request(url)
         return self._parse_response(response)
 
-
-
+    def get_sources(self) -> Union[NewsApiSourcesOkayResponse, NewsApiErrorResponse]:
+        url = self.BASE_URL + '/sources'
+        params = {'apiKey': self.api_key, 'language': 'en', 'country': 'us'}
+        query_str = '&'.join([f'{k}={v}' for k, v in params.items()])
+        res = self._make_get_request(f'{url}?{query_str}')
+        data = json.loads(res.text)
+        if data['status'] != 'ok':
+            return NewsApiErrorResponse(**data)
+        data = convert_keys_from_camel_to_snake(data)
+        data['sources'] = [NewsApiSource(**source) for source in data['sources']]
+        return NewsApiSourcesOkayResponse(**data)
 
