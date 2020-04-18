@@ -52,13 +52,13 @@ def test_news_api_get_sources(news_api_client):
 # it should be possible to limit the result to specific sources
 def test_filter_by_source(news_api_client):
     response = news_api_client.get_everything(
-        query="covid-19", sources=["abc-news", "buzzfeed"]
+        query="python", sources=["techcrunch"],
     ).to_json()
     assert response["status"] == "ok"
     articles = response["articles"]
     for article in articles:
         source = article["source"]
-        assert source["id"] in ("abc-news", "buzzfeed")
+        assert source["id"] == "techcrunch"
     # the client will fail before making a request if more than 20 sources
     # are requested
 

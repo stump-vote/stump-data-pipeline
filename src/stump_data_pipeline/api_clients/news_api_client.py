@@ -40,12 +40,8 @@ class NewsAPIClient:
         sources: Iterable = None,
         domains: Iterable = None,
         exclude_domains: Iterable = None,
-        filter_by: str = "publishedAt",
+        filter_by: str = None,
     ) -> str:
-        if filter_by not in FILTER_BY_OPTIONS:
-            raise ValueError(
-                f'Invalid choice for filter_by parameter. Use one of {",".join(list(FILTER_BY_OPTIONS))}'
-            )
         if endpoint[0] == "/":
             endpoint = endpoint[1:]
         endpoint_url = f"{self.BASE_URL}/{endpoint}"
@@ -54,7 +50,6 @@ class NewsAPIClient:
             "apiKey": self.api_key,
             "pageSize": page_size,
             "page": page,
-            "filterBy": filter_by,
         }
         if date_from is not None:
             query_params["from"] = date_from
@@ -63,7 +58,7 @@ class NewsAPIClient:
         if sort_by is not None:
             query_params["sortBy"] = sort_by
         if sources is not None:
-            query_params["sources"] = ",".join([str(source) for source in sources])
+            query_params["sources"] = ",".join(str(source) for source in sources)
         if title_query is not None:
             query_params["qInTitle"] = title_query
         if domains is not None:
@@ -72,6 +67,8 @@ class NewsAPIClient:
             query_params["excludeDomains"] = ",".join(
                 [str(domain) for domain in exclude_domains]
             )
+        if filter_by is not None:
+            query_params["filterBy"] = filter_by
         query_string_args = sorted([f"{k}={v}" for k, v in query_params.items()])
         query_string = "&".join(query_string_args)
 
@@ -102,8 +99,12 @@ class NewsAPIClient:
         sources: Iterable = None,
         domains: Iterable = None,
         exclude_domains: Iterable = None,
-        filter_by: str = "publishedAt",
+        filter_by: str = None, 
     ) -> NewsApiResponse:
+        if filter_by is not None and filter_by not in FILTER_BY_OPTIONS:
+            raise ValueError(
+                f'Invalid choice for filter_by parameter. Use one of {",".join(list(FILTER_BY_OPTIONS))}'
+            )
         if sources is not None and len(sources) > 20:
             raise ValueError("Too many sources specified. Use a max of 20.")
         url = self._make_url(
@@ -114,8 +115,8 @@ class NewsAPIClient:
             sort_by,
             page_size,
             page,
-            sources,
             title_query,
+            sources,
             domains,
             exclude_domains,
             filter_by,

@@ -24,21 +24,35 @@ def news_api_client():
     return client
 
 
+# test_make_url
 @pytest.mark.parametrize(
-    "endpoint,query,date_from,date_to,sort_by,expected",
+    "endpoint, kwargs, expected",
     (
         (
             "everything",
-            "trump",
-            None,
-            None,
-            None,
+            {
+                'page': 1,
+                'page_size': 100,
+                'query': 'trump',
+            },
             f"http://newsapi.org/v2/everything?apiKey={NEWS_API_KEY}&page=1&pageSize=100&q=trump",
+        ),
+        (
+            # test sources parameter
+            "everything",
+            {
+                'page': 1,
+                'page_size': 100,
+                'query': 'trump',
+                'sources': ['cnn', 'techcrunch'],
+            },
+            f"http://newsapi.org/v2/everything?apiKey={NEWS_API_KEY}&page=1&pageSize=100&q=trump&sources=cnn,techcrunch",
+
         ),
     ),
 )
 def test_make_url(
-    news_api_client, endpoint, query, date_from, date_to, sort_by, expected
+    news_api_client, endpoint, kwargs, expected
 ):
-    url = news_api_client._make_url(endpoint, query, date_from, date_to, sort_by)
+    url = news_api_client._make_url(endpoint, **kwargs) 
     assert url == expected
