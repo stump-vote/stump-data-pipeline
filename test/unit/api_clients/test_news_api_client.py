@@ -33,7 +33,7 @@ def news_api_client():
             None,
             None,
             None,
-            f"http://newsapi.org/v2/everything?apiKey={NEWS_API_KEY}&q=trump",
+            f"http://newsapi.org/v2/everything?apiKey={NEWS_API_KEY}&page=1&pageSize=100&q=trump",
         ),
     ),
 )
