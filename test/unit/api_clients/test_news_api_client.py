@@ -30,29 +30,22 @@ def news_api_client():
     (
         (
             "everything",
-            {
-                'page': 1,
-                'page_size': 100,
-                'query': 'trump',
-            },
+            {"page": 1, "page_size": 100, "query": "trump",},
             f"http://newsapi.org/v2/everything?apiKey={NEWS_API_KEY}&page=1&pageSize=100&q=trump",
         ),
         (
             # test sources parameter
             "everything",
             {
-                'page': 1,
-                'page_size': 100,
-                'query': 'trump',
-                'sources': ['cnn', 'techcrunch'],
+                "page": 1,
+                "page_size": 100,
+                "query": "trump",
+                "sources": ["cnn", "techcrunch"],
             },
             f"http://newsapi.org/v2/everything?apiKey={NEWS_API_KEY}&page=1&pageSize=100&q=trump&sources=cnn,techcrunch",
-
         ),
     ),
 )
-def test_make_url(
-    news_api_client, endpoint, kwargs, expected
-):
-    url = news_api_client._make_url(endpoint, **kwargs) 
+def test_make_url(news_api_client, endpoint, kwargs, expected):
+    url = news_api_client._make_url(endpoint, **kwargs)
     assert url == expected

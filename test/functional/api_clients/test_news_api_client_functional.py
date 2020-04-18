@@ -130,17 +130,18 @@ def test_sort_by(news_api_client, sort_by_option):
     ).to_json()
     assert response["status"] == "ok"
 
-@pytest.mark.parametrize('expected_error, expected_msg, kwargs', (
+
+@pytest.mark.parametrize(
+    "expected_error, expected_msg, kwargs",
     (
-        ValueError,
-        f'Invalid choice for filter_by parameter. Use one of {",".join(list(FILTER_BY_OPTIONS))}',
-        {
-            'filter_by': 'unknown',
-        },
+        (
+            ValueError,
+            f'Invalid choice for filter_by parameter. Use one of {",".join(list(FILTER_BY_OPTIONS))}',
+            {"filter_by": "unknown",},
+        ),
     ),
-))
+)
 def test_get_everything_errors(news_api_client, expected_error, expected_msg, kwargs):
     with pytest.raises(expected_error) as excinfo:
         news_api_client.get_everything(**kwargs)
     assert str(excinfo.value) == expected_msg
-

@@ -99,7 +99,7 @@ class NewsAPIClient:
         sources: Iterable = None,
         domains: Iterable = None,
         exclude_domains: Iterable = None,
-        filter_by: str = None, 
+        filter_by: str = None,
     ) -> NewsApiResponse:
         if filter_by is not None and filter_by not in FILTER_BY_OPTIONS:
             raise ValueError(
