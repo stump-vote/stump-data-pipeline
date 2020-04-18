@@ -6,6 +6,9 @@ from util.dictionary import convert_keys_from_camel_to_snake
 
 import requests
 
+
+FILTER_BY_OPTIONS = frozenset({'relevancy', 'popularity', 'publishedAt'})
+
 class NewsAPIClient:
 
     BASE_URL = "http://newsapi.org/v2"
@@ -21,15 +24,20 @@ class NewsAPIClient:
                            page_size: int = 100, page: int = 1,
                            title_query: str = None,
                            sources: Iterable = None,
-                           domains: Iterable = None) -> str:
-        if endpoint[0] == '/':
-            endpoint = endpoint[1:]
+                           domains: Iterable = None,
+                           exclude_domains: Iterable = None,
+                           filter_by: str ='publishedAt') -> str:
+        if filter_by not in FILTER_BY_OPTIONS:
+            raise ValueError(f'Invalid choice for filter_by parameter. Use one of {",".join(list(FILTER_BY_OPTIONS))}') 
+        if endpoint[0] == '/': 
+            endpoint = endpoint[1:] 
         endpoint_url = f'{self.BASE_URL}/{endpoint}'
         query_params = {
             'q': query,
             'apiKey': self.api_key,
             'pageSize': page_size,
             'page': page,
+            'filterBy': filter_by,
         }
         if date_from is not None:
             query_params['from'] = date_from
@@ -43,6 +51,8 @@ class NewsAPIClient:
             query_params['qInTitle'] = title_query
         if domains is not None:
             query_params['domains'] = ','.join([str(domain) for domain in domains])
+        if exclude_domains is not None:
+            query_params['excludeDomains'] = ','.join([str(domain) for domain in exclude_domains])
         query_string_args = sorted([f'{k}={v}' for k, v in query_params.items()])
         query_string = '&'.join(query_string_args)
 
@@ -66,10 +76,12 @@ class NewsAPIClient:
                        page_size: int = 100, page: int = 1,
                        title_query: str = None,
                        sources: Iterable = None,
-                       domains: Iterable = None) -> NewsApiResponse:
+                       domains: Iterable = None,
+                       exclude_domains: Iterable = None,
+                       filter_by: str = 'publishedAt') -> NewsApiResponse:
         if sources is not None and len(sources) > 20:
             raise ValueError('Too many sources specified. Use a max of 20.')
-        url = self._make_url('everything', query, date_from, date_to, sort_by, page_size, page, sources, title_query, domains)
+        url = self._make_url('everything', query, date_from, date_to, sort_by, page_size, page, sources, title_query, domains, exclude_domains, filter_by)
         response = self._make_get_request(url)
         return self._parse_response(response)
 

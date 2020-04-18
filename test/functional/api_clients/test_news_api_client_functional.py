@@ -19,7 +19,7 @@ def test_news_api_client_basic_response(news_api_client):
     assert okay_response['status'] == 'ok'
 
 def test_news_api_client_date_range(news_api_client):
-    
+
     today = datetime.now().strftime('%Y-%m-%d')
     # it should be possible to specify a date range
     okay_response = news_api_client.get_everything(
@@ -35,7 +35,7 @@ def test_news_api_get_sources(news_api_client):
     assert okay_response['status'] == 'ok'
     assert 'sources' in okay_response
     assert len(okay_response['sources']) > 0
-    
+
     # only english language sources should be returned
     # only sources from the us should be returned
     for source in okay_response['sources']:
@@ -73,7 +73,7 @@ def test_query_article_content(news_api_client):
             'bitcoin' in article['title'].lower()
             or 'bitcoin' in article['content'].lower())
     # it should also be possible to just query the article's title
-    
+
     # we can query for specific domains
 def test_filter_by_domain(news_api_client):
     response = news_api_client.get_everything(query='trump', page_size=5, domains=['wsj.com']).to_json()
@@ -84,7 +84,20 @@ def test_filter_by_domain(news_api_client):
         assert 'wsj.com' in url
 
     # we can also exclude domains
+def test_exclude_domain(news_api_client):
+    response = news_api_client.get_everything(query='trump', page_size=5, domains=['wsj.com'], exclude_domains=['axios.com'])
+    articles = response['articles']
+    assert response['status'] == 'ok'
+    for article in articles:
+        url = article['url']
+        assert 'wsj.com' in url
 
-    # we can sort the results by relevancy, popularity, and date published
 
+# we can sort the results by relevancy, popularity, and date published
+@pytest.mark.parametrize('sort_by_option', (
+    ('popularity',), ('relevancy',), ('publishedAt',),
+))
+def test_sort_by(news_api_client, sort_by_option):
+    response = news_api_client.get_everything(query='trump', page_size=5, sort_by=sort_by_option)
+    assert response['status'] == 'ok'
 
