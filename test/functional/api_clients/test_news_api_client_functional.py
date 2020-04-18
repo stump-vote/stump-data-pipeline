@@ -85,7 +85,7 @@ def test_filter_by_domain(news_api_client):
 
     # we can also exclude domains
 def test_exclude_domain(news_api_client):
-    response = news_api_client.get_everything(query='trump', page_size=5, domains=['wsj.com'], exclude_domains=['axios.com'])
+    response = news_api_client.get_everything(query='trump', page_size=5, domains=['wsj.com'], exclude_domains=['axios.com']).to_json()
     articles = response['articles']
     assert response['status'] == 'ok'
     for article in articles:
@@ -98,6 +98,6 @@ def test_exclude_domain(news_api_client):
     ('popularity',), ('relevancy',), ('publishedAt',),
 ))
 def test_sort_by(news_api_client, sort_by_option):
-    response = news_api_client.get_everything(query='trump', page_size=5, sort_by=sort_by_option)
+    response = news_api_client.get_everything(query='trump', page_size=5, sort_by=sort_by_option).to_json()
     assert response['status'] == 'ok'
 
