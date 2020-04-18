@@ -26,10 +26,11 @@ class NewsApiOkayResponse:
 
     def to_json(self):
         return {
-            'status': self.status,
-            'total_results': self.total_results,
-            'articles': [a.to_json() for a in self.articles],
+            "status": self.status,
+            "total_results": self.total_results,
+            "articles": [a.to_json() for a in self.articles],
         }
+
 
 @dataclass
 class NewsApiErrorResponse:
@@ -39,6 +40,7 @@ class NewsApiErrorResponse:
 
     def to_json(self):
         return asdict(self)
+
 
 @dataclass
 class NewsApiSource:
@@ -61,9 +63,9 @@ class NewsApiSourcesOkayResponse:
 
     def to_json(self):
         return {
-            'status': self.status,
-            'sources': [s.to_json() for s in self.sources],
-            }
+            "status": self.status,
+            "sources": [s.to_json() for s in self.sources],
+        }
 
 
 NewsApiResponse = Union[NewsApiOkayResponse, NewsApiErrorResponse]

@@ -18,6 +18,8 @@ def read_env_variables(filepath=None):
     return env
 
 
-path_to_env_file = os.environ.get('STUMP_DATA_ENV') or \
-            os.path.abspath(os.path.dirname(__file__)) + '/.env'
+path_to_env_file = (
+    os.environ.get("STUMP_DATA_ENV")
+    or os.path.abspath(os.path.dirname(__file__)) + "/.env"
+)
 env = read_env_variables(path_to_env_file)
