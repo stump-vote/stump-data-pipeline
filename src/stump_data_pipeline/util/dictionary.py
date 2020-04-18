@@ -16,5 +16,5 @@ def convert_keys_from_camel_to_snake(d: Dict[str, Any]) -> Dict[str, Any]:
             new_dict[camel_to_snake(k)] = v
         else:
             new_dict[k] = v
-        
+
     return new_dict

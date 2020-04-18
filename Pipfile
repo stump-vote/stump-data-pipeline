@@ -7,9 +7,13 @@ verify_ssl = true
 pytest = "*"
 jupyter = "*"
 mypy = "*"
+pylint = "*"
+black = "*"
 
 [packages]
 requests = "*"
+pymongo = "*"
+environs = "*"
 
 [requires]
 python_version = "3.7"

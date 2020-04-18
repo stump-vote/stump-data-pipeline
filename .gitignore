@@ -1,1 +1,5 @@
 .mypy_cache
+.vscode
+src/stump_data_pipeline/.env
+*.swp
+test/unit/api_clients/data/.pytest_cache/

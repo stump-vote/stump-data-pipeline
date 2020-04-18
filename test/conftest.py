@@ -4,10 +4,7 @@ import os
 
 project_root = os.path.abspath(
     os.path.join(
-        os.path.dirname(__file__),
-        os.path.pardir,
-        'src',
-        'stump_data_pipeline',
+        os.path.dirname(__file__), os.path.pardir, "src", "stump_data_pipeline",
     )
 )
 
